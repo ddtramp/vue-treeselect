@@ -2,19 +2,40 @@ import fuzzysearch from 'fuzzysearch'
 
 import {
   warning,
-  onLeftClick, scrollIntoView,
-  isNaN, isPromise, once,
-  identity, constant, createMap,
-  quickDiff, last as getLast, includes, find, removeFromArray,
+  onLeftClick,
+  scrollIntoView,
+  isNaN,
+  isPromise,
+  once,
+  identity,
+  constant,
+  createMap,
+  quickDiff,
+  last as getLast,
+  includes,
+  find,
+  removeFromArray
 } from '../utils'
 
 import {
   NO_PARENT_NODE,
-  UNCHECKED, INDETERMINATE, CHECKED,
-  LOAD_ROOT_OPTIONS, LOAD_CHILDREN_OPTIONS, ASYNC_SEARCH,
-  ALL, BRANCH_PRIORITY, LEAF_PRIORITY, ALL_WITH_INDETERMINATE,
-  ALL_CHILDREN, ALL_DESCENDANTS, LEAF_CHILDREN, LEAF_DESCENDANTS,
-  ORDER_SELECTED, LEVEL, INDEX,
+  UNCHECKED,
+  INDETERMINATE,
+  CHECKED,
+  LOAD_ROOT_OPTIONS,
+  LOAD_CHILDREN_OPTIONS,
+  ASYNC_SEARCH,
+  ALL,
+  BRANCH_PRIORITY,
+  LEAF_PRIORITY,
+  ALL_WITH_INDETERMINATE,
+  ALL_CHILDREN,
+  ALL_DESCENDANTS,
+  LEAF_CHILDREN,
+  LEAF_DESCENDANTS,
+  ORDER_SELECTED,
+  LEVEL,
+  INDEX
 } from '../constants'
 
 function sortValueByIndex(a, b) {
@@ -28,16 +49,14 @@ function sortValueByIndex(a, b) {
 }
 
 function sortValueByLevel(a, b) {
-  return a.level === b.level
-    ? sortValueByIndex(a, b)
-    : a.level - b.level
+  return a.level === b.level ? sortValueByIndex(a, b) : a.level - b.level
 }
 
 function createAsyncOptionsStates() {
   return {
     isLoaded: false,
     isLoading: false,
-    loadingError: '',
+    loadingError: ''
   }
 }
 
@@ -49,13 +68,11 @@ function stringifyOptionPropValue(value) {
 }
 
 function match(enableFuzzyMatch, needle, haystack) {
-  return enableFuzzyMatch
-    ? fuzzysearch(needle, haystack)
-    : includes(haystack, needle)
+  return enableFuzzyMatch ? fuzzysearch(needle, haystack) : includes(haystack, needle)
 }
 
 function getErrorMessage(err) {
-  return err.message || /* istanbul ignore next */String(err)
+  return err.message || /* istanbul ignore next */ String(err)
 }
 
 let instanceId = 0
@@ -65,7 +82,7 @@ export default {
     return {
       // Enable access to the instance of root component of vue-treeselect
       // across hierarchy.
-      instance: this,
+      instance: this
     }
   },
 
@@ -75,7 +92,7 @@ export default {
      */
     allowClearingDisabled: {
       type: Boolean,
-      default: false,
+      default: false
     },
 
     /**
@@ -84,7 +101,7 @@ export default {
      */
     allowSelectingDisabledDescendants: {
       type: Boolean,
-      default: false,
+      default: false
     },
 
     /**
@@ -92,7 +109,7 @@ export default {
      */
     alwaysOpen: {
       type: Boolean,
-      default: false,
+      default: false
     },
 
     /**
@@ -100,7 +117,7 @@ export default {
      */
     appendToBody: {
       type: Boolean,
-      default: false,
+      default: false
     },
 
     /**
@@ -108,7 +125,7 @@ export default {
      */
     async: {
       type: Boolean,
-      default: false,
+      default: false
     },
 
     /**
@@ -116,7 +133,7 @@ export default {
      */
     autoFocus: {
       type: Boolean,
-      default: false,
+      default: false
     },
 
     /**
@@ -124,7 +141,7 @@ export default {
      */
     autoLoadRootOptions: {
       type: Boolean,
-      default: true,
+      default: true
     },
 
     /**
@@ -132,7 +149,7 @@ export default {
      */
     autoDeselectAncestors: {
       type: Boolean,
-      default: false,
+      default: false
     },
 
     /**
@@ -140,7 +157,7 @@ export default {
      */
     autoDeselectDescendants: {
       type: Boolean,
-      default: false,
+      default: false
     },
 
     /**
@@ -148,7 +165,7 @@ export default {
      */
     autoSelectAncestors: {
       type: Boolean,
-      default: false,
+      default: false
     },
 
     /**
@@ -156,7 +173,7 @@ export default {
      */
     autoSelectDescendants: {
       type: Boolean,
-      default: false,
+      default: false
     },
 
     /**
@@ -164,7 +181,7 @@ export default {
      */
     backspaceRemoves: {
       type: Boolean,
-      default: true,
+      default: true
     },
 
     /**
@@ -174,7 +191,7 @@ export default {
      */
     beforeClearAll: {
       type: Function,
-      default: constant(true),
+      default: constant(true)
     },
 
     /**
@@ -182,7 +199,7 @@ export default {
      */
     branchNodesFirst: {
       type: Boolean,
-      default: false,
+      default: false
     },
 
     /**
@@ -190,7 +207,7 @@ export default {
      */
     cacheOptions: {
       type: Boolean,
-      default: true,
+      default: true
     },
 
     /**
@@ -198,7 +215,7 @@ export default {
      */
     clearable: {
       type: Boolean,
-      default: true,
+      default: true
     },
 
     /**
@@ -206,7 +223,7 @@ export default {
      */
     clearAllText: {
       type: String,
-      default: 'Clear all',
+      default: 'Clear all'
     },
 
     /**
@@ -216,7 +233,7 @@ export default {
      */
     clearOnSelect: {
       type: Boolean,
-      default: false,
+      default: false
     },
 
     /**
@@ -224,7 +241,7 @@ export default {
      */
     clearValueText: {
       type: String,
-      default: 'Clear value',
+      default: 'Clear value'
     },
 
     /**
@@ -233,7 +250,7 @@ export default {
      */
     closeOnSelect: {
       type: Boolean,
-      default: true,
+      default: true
     },
 
     /**
@@ -242,7 +259,7 @@ export default {
      */
     defaultExpandLevel: {
       type: Number,
-      default: 0,
+      default: 0
     },
 
     /**
@@ -251,7 +268,7 @@ export default {
      * @type {boolean|node[]}
      */
     defaultOptions: {
-      default: false,
+      default: false
     },
 
     /**
@@ -259,7 +276,7 @@ export default {
      */
     deleteRemoves: {
       type: Boolean,
-      default: true,
+      default: true
     },
 
     /**
@@ -267,7 +284,7 @@ export default {
      */
     delimiter: {
       type: String,
-      default: ',',
+      default: ','
     },
 
     /**
@@ -277,7 +294,7 @@ export default {
      */
     flattenSearchResults: {
       type: Boolean,
-      default: false,
+      default: false
     },
 
     /**
@@ -285,7 +302,7 @@ export default {
      */
     disableBranchNodes: {
       type: Boolean,
-      default: false,
+      default: false
     },
 
     /**
@@ -293,7 +310,7 @@ export default {
      */
     disabled: {
       type: Boolean,
-      default: false,
+      default: false
     },
 
     /**
@@ -301,7 +318,7 @@ export default {
      */
     disableFuzzyMatching: {
       type: Boolean,
-      default: false,
+      default: false
     },
 
     /**
@@ -312,25 +329,25 @@ export default {
      */
     flat: {
       type: Boolean,
-      default: false,
+      default: false
     },
 
     /**
      * Will be passed with all events as the last param.
      * Useful for identifying events origin.
-    */
+     */
     instanceId: {
       // Add two trailing "$" to distinguish from explictly specified ids.
       default: () => `${instanceId++}$$`,
-      type: [ String, Number ],
+      type: [String, Number]
     },
 
     /**
      * Joins multiple values into a single form field with the `delimiter` (legacy mode).
-    */
+     */
     joinValues: {
       type: Boolean,
-      default: false,
+      default: false
     },
 
     /**
@@ -339,7 +356,7 @@ export default {
      */
     limit: {
       type: Number,
-      default: Infinity,
+      default: Infinity
     },
 
     /**
@@ -348,9 +365,10 @@ export default {
      */
     limitText: {
       type: Function,
-      default: function limitTextDefault(count) { // eslint-disable-line func-name-matching
+      default: function limitTextDefault(count) {
+        // eslint-disable-line func-name-matching
         return `and ${count} more`
-      },
+      }
     },
 
     /**
@@ -358,7 +376,7 @@ export default {
      */
     loadingText: {
       type: String,
-      default: 'Loading...',
+      default: 'Loading...'
     },
 
     /**
@@ -366,7 +384,7 @@ export default {
      * @type {function({action: string, callback: (function((Error|string)=): void), parentNode: node=, instanceId}): void}
      */
     loadOptions: {
-      type: Function,
+      type: Function
     },
 
     /**
@@ -374,7 +392,7 @@ export default {
      */
     matchKeys: {
       type: Array,
-      default: constant([ 'label' ]),
+      default: constant(['label'])
     },
 
     /**
@@ -382,7 +400,7 @@ export default {
      */
     maxHeight: {
       type: Number,
-      default: 300,
+      default: 300
     },
 
     /**
@@ -390,14 +408,14 @@ export default {
      */
     multiple: {
       type: Boolean,
-      default: false,
+      default: false
     },
 
     /**
      * Generates a hidden <input /> tag with this field name for html forms.
      */
     name: {
-      type: String,
+      type: String
     },
 
     /**
@@ -405,7 +423,7 @@ export default {
      */
     noChildrenText: {
       type: String,
-      default: 'No sub-options.',
+      default: 'No sub-options.'
     },
 
     /**
@@ -413,7 +431,7 @@ export default {
      */
     noOptionsText: {
       type: String,
-      default: 'No options available.',
+      default: 'No options available.'
     },
 
     /**
@@ -421,7 +439,7 @@ export default {
      */
     noResultsText: {
       type: String,
-      default: 'No results found...',
+      default: 'No results found...'
     },
 
     /**
@@ -430,7 +448,7 @@ export default {
      */
     normalizer: {
       type: Function,
-      default: identity,
+      default: identity
     },
 
     /**
@@ -449,9 +467,9 @@ export default {
       type: String,
       default: 'auto',
       validator(value) {
-        const acceptableValues = [ 'auto', 'top', 'bottom', 'above', 'below' ]
+        const acceptableValues = ['auto', 'top', 'bottom', 'above', 'below']
         return includes(acceptableValues, value)
-      },
+      }
     },
 
     /**
@@ -459,7 +477,7 @@ export default {
      */
     openOnClick: {
       type: Boolean,
-      default: true,
+      default: true
     },
 
     /**
@@ -467,7 +485,7 @@ export default {
      */
     openOnFocus: {
       type: Boolean,
-      default: false,
+      default: false
     },
 
     /**
@@ -475,7 +493,7 @@ export default {
      * @type {node[]}
      */
     options: {
-      type: Array,
+      type: Array
     },
 
     /**
@@ -483,7 +501,7 @@ export default {
      */
     placeholder: {
       type: String,
-      default: 'Select...',
+      default: 'Select...'
     },
 
     /**
@@ -491,7 +509,7 @@ export default {
      */
     required: {
       type: Boolean,
-      default: false,
+      default: false
     },
 
     /**
@@ -499,7 +517,7 @@ export default {
      */
     retryText: {
       type: String,
-      default: 'Retry?',
+      default: 'Retry?'
     },
 
     /**
@@ -507,7 +525,7 @@ export default {
      */
     retryTitle: {
       type: String,
-      default: 'Click to retry',
+      default: 'Click to retry'
     },
 
     /**
@@ -515,7 +533,7 @@ export default {
      */
     searchable: {
       type: Boolean,
-      default: true,
+      default: true
     },
 
     /**
@@ -523,7 +541,7 @@ export default {
      */
     searchNested: {
       type: Boolean,
-      default: false,
+      default: false
     },
 
     /**
@@ -531,7 +549,7 @@ export default {
      */
     searchPromptText: {
       type: String,
-      default: 'Type to search...',
+      default: 'Type to search...'
     },
 
     /**
@@ -539,7 +557,7 @@ export default {
      */
     showCount: {
       type: Boolean,
-      default: false,
+      default: false
     },
 
     /**
@@ -554,9 +572,9 @@ export default {
       type: String,
       default: ALL_CHILDREN,
       validator(value) {
-        const acceptableValues = [ ALL_CHILDREN, ALL_DESCENDANTS, LEAF_CHILDREN, LEAF_DESCENDANTS ]
+        const acceptableValues = [ALL_CHILDREN, ALL_DESCENDANTS, LEAF_CHILDREN, LEAF_DESCENDANTS]
         return includes(acceptableValues, value)
-      },
+      }
     },
 
     /**
@@ -578,9 +596,9 @@ export default {
       type: String,
       default: ORDER_SELECTED,
       validator(value) {
-        const acceptableValues = [ ORDER_SELECTED, LEVEL, INDEX ]
+        const acceptableValues = [ORDER_SELECTED, LEVEL, INDEX]
         return includes(acceptableValues, value)
-      },
+      }
     },
 
     /**
@@ -588,7 +606,7 @@ export default {
      */
     tabIndex: {
       type: Number,
-      default: 0,
+      default: 0
     },
 
     /**
@@ -612,9 +630,9 @@ export default {
       type: String,
       default: BRANCH_PRIORITY,
       validator(value) {
-        const acceptableValues = [ ALL, BRANCH_PRIORITY, LEAF_PRIORITY, ALL_WITH_INDETERMINATE ]
+        const acceptableValues = [ALL, BRANCH_PRIORITY, LEAF_PRIORITY, ALL_WITH_INDETERMINATE]
         return includes(acceptableValues, value)
-      },
+      }
     },
 
     /**
@@ -626,16 +644,16 @@ export default {
      */
     valueFormat: {
       type: String,
-      default: 'id',
+      default: 'id'
     },
 
     /**
      * z-index of the menu.
      */
     zIndex: {
-      type: [ Number, String ],
-      default: 999,
-    },
+      type: [Number, String],
+      default: 999
+    }
   },
 
   data() {
@@ -644,7 +662,7 @@ export default {
         // Is the control focused?
         isFocused: false,
         // User entered search query - value of the input.
-        searchQuery: '',
+        searchQuery: ''
       },
 
       menu: {
@@ -655,7 +673,7 @@ export default {
         // The scroll position before last menu closing.
         lastScrollPosition: 0,
         // Which direction to open the menu.
-        placement: 'bottom',
+        placement: 'bottom'
       },
 
       forest: {
@@ -669,7 +687,7 @@ export default {
         selectedNodeIds: this.extractCheckedNodeIdsFromValue(),
         // <id, true> map for fast checking:
         //   if (forest.selectedNodeIds.indexOf(id) !== -1) forest.selectedNodeMap[id] === true
-        selectedNodeMap: createMap(),
+        selectedNodeMap: createMap()
       },
 
       // States of root options.
@@ -681,11 +699,11 @@ export default {
         // Has any options matched the search query?
         noResults: true,
         // <id, countObject> map for counting matched children/descendants.
-        countMap: createMap(),
+        countMap: createMap()
       },
 
       // <searchQuery, remoteSearchEntry> map.
-      remoteSearch: createMap(),
+      remoteSearch: createMap()
     }
   },
 
@@ -709,13 +727,13 @@ export default {
       if (this.single || this.flat || this.disableBranchNodes || this.valueConsistsOf === ALL) {
         internalValue = this.forest.selectedNodeIds.slice()
       } else if (this.valueConsistsOf === BRANCH_PRIORITY) {
-        internalValue = this.forest.selectedNodeIds.filter(id => {
+        internalValue = this.forest.selectedNodeIds.filter((id) => {
           const node = this.getNode(id)
           if (node.isRootNode) return true
           return !this.isSelected(node.parentNode)
         })
       } else if (this.valueConsistsOf === LEAF_PRIORITY) {
-        internalValue = this.forest.selectedNodeIds.filter(id => {
+        internalValue = this.forest.selectedNodeIds.filter((id) => {
           const node = this.getNode(id)
           if (node.isLeaf) return true
           return node.children.length === 0
@@ -723,8 +741,8 @@ export default {
       } else if (this.valueConsistsOf === ALL_WITH_INDETERMINATE) {
         const indeterminateNodeIds = []
         internalValue = this.forest.selectedNodeIds.slice()
-        this.selectedNodes.forEach(selectedNode => {
-          selectedNode.ancestors.forEach(ancestor => {
+        this.selectedNodes.forEach((selectedNode) => {
+          selectedNode.ancestors.forEach((ancestor) => {
             if (includes(indeterminateNodeIds, ancestor.id)) return
             if (includes(internalValue, ancestor.id)) return
             indeterminateNodeIds.push(ancestor.id)
@@ -766,7 +784,7 @@ export default {
     visibleOptionIds() {
       const visibleOptionIds = []
 
-      this.traverseAllNodesByIndex(node => {
+      this.traverseAllNodesByIndex((node) => {
         if (!this.localSearch.active || this.shouldOptionBeIncludedInSearchResult(node)) {
           visibleOptionIds.push(node.id)
         }
@@ -793,20 +811,18 @@ export default {
       // Vue doesn't allow setting default prop value based on another prop value.
       // So use computed property as a workaround.
       // https://github.com/vuejs/vue/issues/6358
-      return typeof this.showCountOnSearch === 'boolean'
-        ? this.showCountOnSearch
-        : this.showCount
+      return typeof this.showCountOnSearch === 'boolean' ? this.showCountOnSearch : this.showCount
     },
     /**
      * Is there any branch node?
      * @type {boolean}
      */
     hasBranchNodes() {
-      return this.forest.normalizedOptions.some(rootNode => rootNode.isBranch)
+      return this.forest.normalizedOptions.some((rootNode) => rootNode.isBranch)
     },
     shouldFlattenOptions() {
       return this.localSearch.active && this.flattenSearchResults
-    },
+    }
     /* eslint-enable valid-jsdoc */
   },
 
@@ -857,7 +873,7 @@ export default {
         this.rootOptionsStates.isLoaded = Array.isArray(this.options)
       },
       deep: true,
-      immediate: true,
+      immediate: true
     },
 
     'trigger.searchQuery'() {
@@ -874,27 +890,27 @@ export default {
       const nodeIdsFromValue = this.extractCheckedNodeIdsFromValue()
       const hasChanged = quickDiff(nodeIdsFromValue, this.internalValue)
       if (hasChanged) this.fixSelectedNodeIds(nodeIdsFromValue)
-    },
+    }
   },
 
   methods: {
     verifyProps() {
       warning(
-        () => this.async ? this.searchable : true,
-        () => 'For async search mode, the value of "searchable" prop must be true.',
+        () => (this.async ? this.searchable : true),
+        () => 'For async search mode, the value of "searchable" prop must be true.'
       )
 
       if (this.options == null && !this.loadOptions) {
         warning(
           () => false,
-          () => 'Are you meant to dynamically load options? You need to use "loadOptions" prop.',
+          () => 'Are you meant to dynamically load options? You need to use "loadOptions" prop.'
         )
       }
 
       if (this.flat) {
         warning(
           () => this.multiple,
-          () => 'You are using flat mode. But you forgot to add "multiple=true"?',
+          () => 'You are using flat mode. But you forgot to add "multiple=true"?'
         )
       }
 
@@ -903,13 +919,13 @@ export default {
           'autoSelectAncestors',
           'autoSelectDescendants',
           'autoDeselectAncestors',
-          'autoDeselectDescendants',
+          'autoDeselectDescendants'
         ]
 
-        propNames.forEach(propName => {
+        propNames.forEach((propName) => {
           warning(
             () => !this[propName],
-            () => `"${propName}" only applies to flat mode.`,
+            () => `"${propName}" only applies to flat mode.`
           )
         })
       }
@@ -920,9 +936,7 @@ export default {
     },
 
     initialize() {
-      const options = this.async
-        ? this.getRemoteSearchEntry().options
-        : this.options
+      const options = this.async ? this.getRemoteSearchEntry().options : this.options
 
       if (Array.isArray(options)) {
         // In case we are re-initializing options, keep the old state tree temporarily.
@@ -948,26 +962,22 @@ export default {
 
     getValue() {
       if (this.valueFormat === 'id') {
-        return this.multiple
-          ? this.internalValue.slice()
-          : this.internalValue[0]
+        return this.multiple ? this.internalValue.slice() : this.internalValue[0]
       }
 
-      const rawNodes = this.internalValue.map(id => this.getNode(id).raw)
+      const rawNodes = this.internalValue.map((id) => this.getNode(id).raw)
       return this.multiple ? rawNodes : rawNodes[0]
     },
 
     getNode(nodeId) {
       warning(
         () => nodeId != null,
-        () => `Invalid node id: ${nodeId}`,
+        () => `Invalid node id: ${nodeId}`
       )
 
       if (nodeId == null) return null
 
-      return nodeId in this.forest.nodeMap
-        ? this.forest.nodeMap[nodeId]
-        : this.createFallbackNode(nodeId)
+      return nodeId in this.forest.nodeMap ? this.forest.nodeMap[nodeId] : this.createFallbackNode(nodeId)
     },
 
     createFallbackNode(id) {
@@ -988,9 +998,9 @@ export default {
         isBranch: false,
         isDisabled: false,
         isNew: false,
-        index: [ -1 ],
+        index: [-1],
         level: 0,
-        raw,
+        raw
       }
 
       return this.$set(this.forest.nodeMap, id, fallbackNode)
@@ -1000,14 +1010,12 @@ export default {
       if (this.value == null) return []
 
       if (this.valueFormat === 'id') {
-        return this.multiple
-          ? this.value.slice()
-          : [ this.value ]
+        return this.multiple ? this.value.slice() : [this.value]
       }
 
-      return (this.multiple ? this.value : [ this.value ])
-        .map(node => this.enhancedNormalizer(node))
-        .map(node => node.id)
+      return (this.multiple ? this.value : [this.value])
+        .map((node) => this.enhancedNormalizer(node))
+        .map((node) => node.id)
     },
 
     extractNodeFromValue(id) {
@@ -1017,13 +1025,8 @@ export default {
         return defaultNode
       }
 
-      const valueArray = this.multiple
-        ? Array.isArray(this.value) ? this.value : []
-        : this.value ? [ this.value ] : []
-      const matched = find(
-        valueArray,
-        node => node && this.enhancedNormalizer(node).id === id,
-      )
+      const valueArray = this.multiple ? (Array.isArray(this.value) ? this.value : []) : this.value ? [this.value] : []
+      const matched = find(valueArray, (node) => node && this.enhancedNormalizer(node).id === id)
 
       return matched || defaultNode
     },
@@ -1035,12 +1038,13 @@ export default {
       if (this.single || this.flat || this.disableBranchNodes || this.valueConsistsOf === ALL) {
         nextSelectedNodeIds = nodeIdListOfPrevValue
       } else if (this.valueConsistsOf === BRANCH_PRIORITY) {
-        nodeIdListOfPrevValue.forEach(nodeId => {
+        nodeIdListOfPrevValue.forEach((nodeId) => {
           nextSelectedNodeIds.push(nodeId)
           const node = this.getNode(nodeId)
-          if (node.isBranch) this.traverseDescendantsBFS(node, descendant => {
-            nextSelectedNodeIds.push(descendant.id)
-          })
+          if (node.isBranch)
+            this.traverseDescendantsBFS(node, (descendant) => {
+              nextSelectedNodeIds.push(descendant.id)
+            })
         })
       } else if (this.valueConsistsOf === LEAF_PRIORITY) {
         const map = createMap()
@@ -1055,7 +1059,7 @@ export default {
         }
       } else if (this.valueConsistsOf === ALL_WITH_INDETERMINATE) {
         const map = createMap()
-        const queue = nodeIdListOfPrevValue.filter(nodeId => {
+        const queue = nodeIdListOfPrevValue.filter((nodeId) => {
           const node = this.getNode(nodeId)
           return node.isLeaf || node.children.length === 0
         })
@@ -1081,11 +1085,11 @@ export default {
     keepDataOfSelectedNodes(prevNodeMap) {
       // In case there is any selected node that is not present in the new `options` array.
       // It could be useful for async search mode.
-      this.forest.selectedNodeIds.forEach(id => {
+      this.forest.selectedNodeIds.forEach((id) => {
         if (!prevNodeMap[id]) return
         const node = {
           ...prevNodeMap[id],
-          isFallbackNode: true,
+          isFallbackNode: true
         }
         this.$set(this.forest.nodeMap, id, node)
       })
@@ -1110,7 +1114,7 @@ export default {
 
     traverseDescendantsDFS(parentNode, callback) {
       if (!parentNode.isBranch) return
-      parentNode.children.forEach(child => {
+      parentNode.children.forEach((child) => {
         // deep-level node first
         this.traverseDescendantsDFS(child, callback)
         callback(child)
@@ -1118,7 +1122,7 @@ export default {
     },
 
     traverseAllNodesDFS(callback) {
-      this.forest.normalizedOptions.forEach(rootNode => {
+      this.forest.normalizedOptions.forEach((rootNode) => {
         // deep-level node first
         this.traverseDescendantsDFS(rootNode, callback)
         callback(rootNode)
@@ -1126,8 +1130,8 @@ export default {
     },
 
     traverseAllNodesByIndex(callback) {
-      const walk = parentNode => {
-        parentNode.children.forEach(child => {
+      const walk = (parentNode) => {
+        parentNode.children.forEach((child) => {
           if (callback(child) !== false && child.isBranch) {
             walk(child)
           }
@@ -1207,7 +1211,7 @@ export default {
 
       // Reset states.
       this.localSearch.noResults = true
-      this.traverseAllNodesDFS(node => {
+      this.traverseAllNodesDFS((node) => {
         if (node.isBranch) {
           node.isExpandedOnSearch = false
           node.showAllChildrenOnSearch = false
@@ -1217,28 +1221,27 @@ export default {
             [ALL_CHILDREN]: 0,
             [ALL_DESCENDANTS]: 0,
             [LEAF_CHILDREN]: 0,
-            [LEAF_DESCENDANTS]: 0,
+            [LEAF_DESCENDANTS]: 0
           })
         }
       })
 
       const lowerCasedSearchQuery = searchQuery.trim().toLocaleLowerCase()
       const splitSearchQuery = lowerCasedSearchQuery.replace(/\s+/g, ' ').split(' ')
-      this.traverseAllNodesDFS(node => {
+      this.traverseAllNodesDFS((node) => {
         if (this.searchNested && splitSearchQuery.length > 1) {
-          node.isMatched = splitSearchQuery.every(filterValue =>
-            match(false, filterValue, node.nestedSearchLabel),
-          )
+          node.isMatched = splitSearchQuery.every((filterValue) => match(false, filterValue, node.nestedSearchLabel))
         } else {
-          node.isMatched = this.matchKeys.some(matchKey =>
-            match(!this.disableFuzzyMatching, lowerCasedSearchQuery, node.lowerCased[matchKey]),
+          node.isMatched = this.matchKeys.some((matchKey) =>
+            match(!this.disableFuzzyMatching, lowerCasedSearchQuery, node.lowerCased[matchKey])
           )
         }
 
         if (node.isMatched) {
           this.localSearch.noResults = false
-          node.ancestors.forEach(ancestor => this.localSearch.countMap[ancestor.id][ALL_DESCENDANTS]++)
-          if (node.isLeaf) node.ancestors.forEach(ancestor => this.localSearch.countMap[ancestor.id][LEAF_DESCENDANTS]++)
+          node.ancestors.forEach((ancestor) => this.localSearch.countMap[ancestor.id][ALL_DESCENDANTS]++)
+          if (node.isLeaf)
+            node.ancestors.forEach((ancestor) => this.localSearch.countMap[ancestor.id][LEAF_DESCENDANTS]++)
           if (node.parentNode !== NO_PARENT_NODE) {
             this.localSearch.countMap[node.parentNode.id][ALL_CHILDREN] += 1
             // istanbul ignore else
@@ -1246,10 +1249,7 @@ export default {
           }
         }
 
-        if (
-          (node.isMatched || (node.isBranch && node.isExpandedOnSearch)) &&
-          node.parentNode !== NO_PARENT_NODE
-        ) {
+        if ((node.isMatched || (node.isBranch && node.isExpandedOnSearch)) && node.parentNode !== NO_PARENT_NODE) {
           node.parentNode.isExpandedOnSearch = true
           node.parentNode.hasMatchedDescendants = true
         }
@@ -1281,19 +1281,19 @@ export default {
           entry.isLoaded = false
           entry.loadingError = ''
         },
-        succeed: options => {
+        succeed: (options) => {
           entry.isLoaded = true
           entry.options = options
           // When the request completes, the search query may have changed.
           // We only show these options if they are for the current search query.
           if (this.trigger.searchQuery === searchQuery) done()
         },
-        fail: err => {
+        fail: (err) => {
           entry.loadingError = getErrorMessage(err)
         },
         end: () => {
           entry.isLoading = false
-        },
+        }
       })
     },
 
@@ -1301,7 +1301,7 @@ export default {
       const { searchQuery } = this.trigger
       const entry = this.remoteSearch[searchQuery] || {
         ...createAsyncOptionsStates(),
-        options: [],
+        options: []
       }
 
       // Vue doesn't support directly watching on objects.
@@ -1311,7 +1311,7 @@ export default {
           // TODO: potential redundant re-initialization.
           if (this.trigger.searchQuery === searchQuery) this.initialize()
         },
-        { deep: true },
+        { deep: true }
       )
 
       if (searchQuery === '') {
@@ -1395,7 +1395,8 @@ export default {
       const { current } = this.menu
 
       if (
-        forceReset || current == null ||
+        forceReset ||
+        current == null ||
         !(current in this.forest.nodeMap) ||
         !this.shouldShowOptionInMenu(this.getNode(current))
       ) {
@@ -1481,22 +1482,22 @@ export default {
 
     buildForestState() {
       const selectedNodeMap = createMap()
-      this.forest.selectedNodeIds.forEach(selectedNodeId => {
+      this.forest.selectedNodeIds.forEach((selectedNodeId) => {
         selectedNodeMap[selectedNodeId] = true
       })
       this.forest.selectedNodeMap = selectedNodeMap
 
       const checkedStateMap = createMap()
       if (this.multiple) {
-        this.traverseAllNodesByIndex(node => {
+        this.traverseAllNodesByIndex((node) => {
           checkedStateMap[node.id] = UNCHECKED
         })
 
-        this.selectedNodes.forEach(selectedNode => {
+        this.selectedNodes.forEach((selectedNode) => {
           checkedStateMap[selectedNode.id] = CHECKED
 
           if (!this.flat && !this.disableBranchNodes) {
-            selectedNode.ancestors.forEach(ancestorNode => {
+            selectedNode.ancestors.forEach((ancestorNode) => {
               if (!this.isSelected(ancestorNode)) {
                 checkedStateMap[ancestorNode.id] = INDETERMINATE
               }
@@ -1510,14 +1511,14 @@ export default {
     enhancedNormalizer(raw) {
       return {
         ...raw,
-        ...this.normalizer(raw, this.getInstanceId()),
+        ...this.normalizer(raw, this.getInstanceId())
       }
     },
 
     normalize(parentNode, nodes, prevNodeMap) {
       let normalizedOptions = nodes
-        .map(node => [ this.enhancedNormalizer(node), node ])
-        .map(([ node, raw ], index) => {
+        .map((node) => [this.enhancedNormalizer(node), node])
+        .map(([node, raw], index) => {
           this.checkDuplication(node)
           this.verifyNodeShape(node)
 
@@ -1528,10 +1529,13 @@ export default {
           const isLeaf = !isBranch
           const isDisabled = !!node.isDisabled || (!this.flat && !isRootNode && parentNode.isDisabled)
           const isNew = !!node.isNew
-          const lowerCased = this.matchKeys.reduce((prev, key) => ({
-            ...prev,
-            [key]: stringifyOptionPropValue(node[key]).toLocaleLowerCase(),
-          }), {})
+          const lowerCased = this.matchKeys.reduce(
+            (prev, key) => ({
+              ...prev,
+              [key]: stringifyOptionPropValue(node[key]).toLocaleLowerCase()
+            }),
+            {}
+          )
           const nestedSearchLabel = isRootNode
             ? lowerCased.label
             : parentNode.nestedSearchLabel + ' ' + lowerCased.label
@@ -1540,7 +1544,7 @@ export default {
           this.$set(normalized, 'id', id)
           this.$set(normalized, 'label', label)
           this.$set(normalized, 'level', level)
-          this.$set(normalized, 'ancestors', isRootNode ? [] : [ parentNode ].concat(parentNode.ancestors))
+          this.$set(normalized, 'ancestors', isRootNode ? [] : [parentNode].concat(parentNode.ancestors))
           this.$set(normalized, 'index', (isRootNode ? [] : parentNode.index).concat(index))
           this.$set(normalized, 'parentNode', parentNode)
           this.$set(normalized, 'lowerCased', lowerCased)
@@ -1559,11 +1563,13 @@ export default {
 
             this.$set(normalized, 'childrenStates', {
               ...createAsyncOptionsStates(),
-              isLoaded,
+              isLoaded
             })
-            this.$set(normalized, 'isExpanded', typeof isDefaultExpanded === 'boolean'
-              ? isDefaultExpanded
-              : level < this.defaultExpandLevel)
+            this.$set(
+              normalized,
+              'isExpanded',
+              typeof isDefaultExpanded === 'boolean' ? isDefaultExpanded : level < this.defaultExpandLevel
+            )
             this.$set(normalized, 'hasMatchedDescendants', false)
             this.$set(normalized, 'hasDisabledDescendants', false)
             this.$set(normalized, 'isExpandedOnSearch', false)
@@ -1572,28 +1578,27 @@ export default {
               [ALL_CHILDREN]: 0,
               [ALL_DESCENDANTS]: 0,
               [LEAF_CHILDREN]: 0,
-              [LEAF_DESCENDANTS]: 0,
+              [LEAF_DESCENDANTS]: 0
             })
-            this.$set(normalized, 'children', isLoaded
-              ? this.normalize(normalized, children, prevNodeMap)
-              : [])
+            this.$set(normalized, 'children', isLoaded ? this.normalize(normalized, children, prevNodeMap) : [])
 
-            if (isDefaultExpanded === true) normalized.ancestors.forEach(ancestor => {
-              ancestor.isExpanded = true
-            })
+            if (isDefaultExpanded === true)
+              normalized.ancestors.forEach((ancestor) => {
+                ancestor.isExpanded = true
+              })
 
             if (!isLoaded && typeof this.loadOptions !== 'function') {
               warning(
                 () => false,
-                () => 'Unloaded branch node detected. "loadOptions" prop is required to load its children.',
+                () => 'Unloaded branch node detected. "loadOptions" prop is required to load its children.'
               )
             } else if (!isLoaded && normalized.isExpanded) {
               this.loadChildrenOptions(normalized)
             }
           }
 
-          normalized.ancestors.forEach(ancestor => ancestor.count[ALL_DESCENDANTS]++)
-          if (isLeaf) normalized.ancestors.forEach(ancestor => ancestor.count[LEAF_DESCENDANTS]++)
+          normalized.ancestors.forEach((ancestor) => ancestor.count[ALL_DESCENDANTS]++)
+          if (isLeaf) normalized.ancestors.forEach((ancestor) => ancestor.count[LEAF_DESCENDANTS]++)
           if (!isRootNode) {
             parentNode.count[ALL_CHILDREN] += 1
             if (isLeaf) parentNode.count[LEAF_CHILDREN] += 1
@@ -1629,8 +1634,8 @@ export default {
         })
 
       if (this.branchNodesFirst) {
-        const branchNodes = normalizedOptions.filter(option => option.isBranch)
-        const leafNodes = normalizedOptions.filter(option => option.isLeaf)
+        const branchNodes = normalizedOptions.filter((option) => option.isBranch)
+        const leafNodes = normalizedOptions.filter((option) => option.isLeaf)
         normalizedOptions = branchNodes.concat(leafNodes)
       }
 
@@ -1654,12 +1659,12 @@ export default {
             this.resetHighlightedOptionWhenNecessary(true)
           })
         },
-        fail: err => {
+        fail: (err) => {
           this.rootOptionsStates.loadingError = getErrorMessage(err)
         },
         end: () => {
           this.rootOptionsStates.isLoading = false
-        },
+        }
       })
     },
 
@@ -1676,7 +1681,7 @@ export default {
           // callback provided by the user of this component.
           // Because the shape of the raw node is more likely to be closing to
           // what the back-end API service of the application needs.
-          parentNode: raw,
+          parentNode: raw
         },
         isPending: () => {
           return this.getNode(id).childrenStates.isLoading
@@ -1688,12 +1693,12 @@ export default {
         succeed: () => {
           this.getNode(id).childrenStates.isLoaded = true
         },
-        fail: err => {
+        fail: (err) => {
           this.getNode(id).childrenStates.loadingError = getErrorMessage(err)
         },
         end: () => {
           this.getNode(id).childrenStates.isLoading = false
-        },
+        }
       })
     },
 
@@ -1718,34 +1723,41 @@ export default {
         instanceId: this.getInstanceId(),
         action,
         ...args,
-        callback,
+        callback
       })
 
       if (isPromise(result)) {
-        result.then(() => {
-          callback()
-        }, err => {
-          callback(err)
-        }).catch(err => {
-          // istanbul ignore next
-          console.error(err)
-        })
+        result
+          .then(
+            () => {
+              callback()
+            },
+            (err) => {
+              callback(err)
+            }
+          )
+          .catch((err) => {
+            // istanbul ignore next
+            console.error(err)
+          })
       }
     },
 
     checkDuplication(node) {
       warning(
-        () => !((node.id in this.forest.nodeMap) && !this.forest.nodeMap[node.id].isFallbackNode),
-        () => `Detected duplicate presence of node id ${JSON.stringify(node.id)}. ` +
-          `Their labels are "${this.forest.nodeMap[node.id].label}" and "${node.label}" respectively.`,
+        () => !(node.id in this.forest.nodeMap && !this.forest.nodeMap[node.id].isFallbackNode),
+        () =>
+          `Detected duplicate presence of node id ${JSON.stringify(node.id)}. ` +
+          `Their labels are "${this.forest.nodeMap[node.id].label}" and "${node.label}" respectively.`
       )
     },
 
     verifyNodeShape(node) {
       warning(
         () => !(node.children === undefined && node.isBranch === true),
-        () => 'Are you meant to declare an unloaded branch node? ' +
-          '`isBranch: true` is no longer supported, please use `children: null` instead.',
+        () =>
+          'Are you meant to declare an unloaded branch node? ' +
+          '`isBranch: true` is no longer supported, please use `children: null` instead.'
       )
     },
 
@@ -1758,9 +1770,8 @@ export default {
         this.clear()
       }
 
-      const nextState = this.multiple && !this.flat
-        ? this.forest.checkedStateMap[node.id] === UNCHECKED
-        : !this.isSelected(node)
+      const nextState =
+        this.multiple && !this.flat ? this.forest.checkedStateMap[node.id] === UNCHECKED : !this.isSelected(node)
 
       if (nextState) {
         this._selectNode(node)
@@ -1794,10 +1805,8 @@ export default {
       if (this.hasValue) {
         if (this.single || this.allowClearingDisabled) {
           this.forest.selectedNodeIds = []
-        } else /* if (this.multiple && !this.allowClearingDisabled) */ {
-          this.forest.selectedNodeIds = this.forest.selectedNodeIds.filter(nodeId =>
-            this.getNode(nodeId).isDisabled,
-          )
+        } /* if (this.multiple && !this.allowClearingDisabled) */ else {
+          this.forest.selectedNodeIds = this.forest.selectedNodeIds.filter((nodeId) => this.getNode(nodeId).isDisabled)
         }
 
         this.buildForestState()
@@ -1814,11 +1823,11 @@ export default {
         this.addValue(node)
 
         if (this.autoSelectAncestors) {
-          node.ancestors.forEach(ancestor => {
+          node.ancestors.forEach((ancestor) => {
             if (!this.isSelected(ancestor) && !ancestor.isDisabled) this.addValue(ancestor)
           })
         } else if (this.autoSelectDescendants) {
-          this.traverseDescendantsBFS(node, descendant => {
+          this.traverseDescendantsBFS(node, (descendant) => {
             if (!this.isSelected(descendant) && !descendant.isDisabled) this.addValue(descendant)
           })
         }
@@ -1826,17 +1835,16 @@ export default {
         return
       }
 
-      const isFullyChecked = (
+      const isFullyChecked =
         node.isLeaf ||
-        (/* node.isBranch && */!node.hasDisabledDescendants) ||
-        (/* node.isBranch && */this.allowSelectingDisabledDescendants)
-      )
+        /* node.isBranch && */ !node.hasDisabledDescendants ||
+        /* node.isBranch && */ this.allowSelectingDisabledDescendants
       if (isFullyChecked) {
         this.addValue(node)
       }
 
       if (node.isBranch) {
-        this.traverseDescendantsBFS(node, descendant => {
+        this.traverseDescendantsBFS(node, (descendant) => {
           if (!descendant.isDisabled || this.allowSelectingDisabledDescendants) {
             this.addValue(descendant)
           }
@@ -1862,11 +1870,11 @@ export default {
         this.removeValue(node)
 
         if (this.autoDeselectAncestors) {
-          node.ancestors.forEach(ancestor => {
+          node.ancestors.forEach((ancestor) => {
             if (this.isSelected(ancestor) && !ancestor.isDisabled) this.removeValue(ancestor)
           })
         } else if (this.autoDeselectDescendants) {
-          this.traverseDescendantsBFS(node, descendant => {
+          this.traverseDescendantsBFS(node, (descendant) => {
             if (this.isSelected(descendant) && !descendant.isDisabled) this.removeValue(descendant)
           })
         }
@@ -1876,7 +1884,7 @@ export default {
 
       let hasUncheckedSomeDescendants = false
       if (node.isBranch) {
-        this.traverseDescendantsDFS(node, descendant => {
+        this.traverseDescendantsDFS(node, (descendant) => {
           if (!descendant.isDisabled || this.allowSelectingDisabledDescendants) {
             this.removeValue(descendant)
             hasUncheckedSomeDescendants = true
@@ -1886,8 +1894,8 @@ export default {
 
       if (
         node.isLeaf ||
-        /* node.isBranch && */hasUncheckedSomeDescendants ||
-        /* node.isBranch && */node.children.length === 0
+        /* node.isBranch && */ hasUncheckedSomeDescendants ||
+        /* node.isBranch && */ node.children.length === 0
       ) {
         this.removeValue(node)
 
@@ -1927,7 +1935,7 @@ export default {
       const $menu = this.getMenu()
       // istanbul ignore else
       if ($menu) $menu.scrollTop = this.menu.lastScrollPosition
-    },
+    }
   },
 
   created() {
@@ -1945,5 +1953,5 @@ export default {
   destroyed() {
     // istanbul ignore next
     this.toggleClickOutsideEvent(false)
-  },
+  }
 }
