@@ -45,7 +45,7 @@ function sortValueByIndex(a, b) {
     if (b.level < i) return 1
     if (a.index[i] !== b.index[i]) return a.index[i] - b.index[i]
     i++
-  } while (true)
+  } while (true) // eslint-disable-line
 }
 
 function sortValueByLevel(a, b) {
@@ -997,6 +997,9 @@ export default {
         isLeaf: true,
         isBranch: false,
         isDisabled: false,
+
+        disabled: false,
+
         isNew: false,
         index: [-1],
         level: 0,
@@ -1041,10 +1044,11 @@ export default {
         nodeIdListOfPrevValue.forEach((nodeId) => {
           nextSelectedNodeIds.push(nodeId)
           const node = this.getNode(nodeId)
-          if (node.isBranch)
+          if (node.isBranch) {
             this.traverseDescendantsBFS(node, (descendant) => {
               nextSelectedNodeIds.push(descendant.id)
             })
+          }
         })
       } else if (this.valueConsistsOf === LEAF_PRIORITY) {
         const map = createMap()
@@ -1240,8 +1244,9 @@ export default {
         if (node.isMatched) {
           this.localSearch.noResults = false
           node.ancestors.forEach((ancestor) => this.localSearch.countMap[ancestor.id][ALL_DESCENDANTS]++)
-          if (node.isLeaf)
+          if (node.isLeaf) {
             node.ancestors.forEach((ancestor) => this.localSearch.countMap[ancestor.id][LEAF_DESCENDANTS]++)
+          }
           if (node.parentNode !== NO_PARENT_NODE) {
             this.localSearch.countMap[node.parentNode.id][ALL_CHILDREN] += 1
             // istanbul ignore else
@@ -1528,6 +1533,9 @@ export default {
           const isBranch = Array.isArray(children) || children === null
           const isLeaf = !isBranch
           const isDisabled = !!node.isDisabled || (!this.flat && !isRootNode && parentNode.isDisabled)
+
+          const disabled = !!node.disabled
+
           const isNew = !!node.isNew
           const lowerCased = this.matchKeys.reduce(
             (prev, key) => ({
@@ -1549,7 +1557,10 @@ export default {
           this.$set(normalized, 'parentNode', parentNode)
           this.$set(normalized, 'lowerCased', lowerCased)
           this.$set(normalized, 'nestedSearchLabel', nestedSearchLabel)
+
           this.$set(normalized, 'isDisabled', isDisabled)
+          this.$set(normalized, 'disabled', disabled)
+
           this.$set(normalized, 'isNew', isNew)
           this.$set(normalized, 'isMatched', false)
           this.$set(normalized, 'isHighlighted', false)
@@ -1582,10 +1593,11 @@ export default {
             })
             this.$set(normalized, 'children', isLoaded ? this.normalize(normalized, children, prevNodeMap) : [])
 
-            if (isDefaultExpanded === true)
+            if (isDefaultExpanded === true) {
               normalized.ancestors.forEach((ancestor) => {
                 ancestor.isExpanded = true
               })
+            }
 
             if (!isLoaded && typeof this.loadOptions !== 'function') {
               warning(
@@ -1762,7 +1774,7 @@ export default {
     },
 
     select(node) {
-      if (this.disabled || node.isDisabled) {
+      if (this.disabled || node.disabled || node.isDisabled) {
         return
       }
 
