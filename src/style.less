@@ -71,6 +71,8 @@
 @treeselect-control-menu-divider-color: #f2f2f2;
 
 @treeselect-arrow-size: 9px;
+@treeselect-arrow-size-custom: 18px;
+
 @treeselect-arrow-color: #ccc;
 @treeselect-arrow-color-hover: @md-grey-700;
 @treeselect-arrow-transition-timing-function: @ease-out-expo;
@@ -673,8 +675,8 @@
 }
 
 .vue-treeselect__control-arrow {
-  width: @treeselect-arrow-size;
-  height: @treeselect-arrow-size;
+  width: @treeselect-arrow-size-custom;
+  height: @treeselect-arrow-size-custom;
   color: @treeselect-arrow-color;
 
   .vue-treeselect:not(.vue-treeselect--disabled) .vue-treeselect__control-arrow-container:hover & {

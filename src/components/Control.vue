@@ -3,7 +3,8 @@
   import SingleValue from './SingleValue'
   import MultiValue from './MultiValue'
   import DeleteIcon from './icons/Delete'
-  import ArrowIcon from './icons/Arrow'
+  // import ArrowIcon from './icons/Arrow'
+  import ArrowIcon from './icons/ArrowDown.vue'
 
   export default {
     name: 'vue-treeselect--control',
